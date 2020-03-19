@@ -6,6 +6,7 @@ const path = require("path")
 
 const DataSchema=require("./Models/DataSchema").DataSchema;
 const PairSchema=require("./Models/DataSchema").PairSchema;
+const sendMail=require("./mail").sendMail;
 
 const app=express();
 
@@ -20,7 +21,7 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/Interview
 const testData=[
     {
         name:"Anuj",
-        email:"abc@example.com",
+        email:"rajanuj2903@gmail.com",
     },
     {
         name:"abhishek",
@@ -78,6 +79,8 @@ app.post("/saveData",async (req,res) => {
         const temp = await DataSchema.findOne({email: req.body.email});
         temp.interviewTime.push(interval);
         temp.save();
+
+        sendMail(req.body.email,req.body.startTime,req.body.endTime);
     }
 
 });
