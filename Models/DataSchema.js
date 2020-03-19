@@ -1,6 +1,15 @@
 const mongoose=require("mongoose");
 const Schema=mongoose.Schema;
 
+let PairSchema=new Schema({
+    startTime:{
+        type:String
+    },
+    endTime:{
+        type:String
+    }
+});
+
 let DataSchema=new Schema({
     name:{
         type:String,
@@ -11,9 +20,12 @@ let DataSchema=new Schema({
         required:true
     },
     interviewTime: {
-        type: [[String]],
-        default:null
+        type: [PairSchema],
+        required:false
     }
 });
 
-module.exports = DataSchema = mongoose.model("dataschema", DataSchema);
+ DataSchema = mongoose.model("dataschema", DataSchema);
+ PairSchema = mongoose.model("pairschema",PairSchema);
+ module.exports={DataSchema,PairSchema}
+

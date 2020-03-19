@@ -4,7 +4,8 @@ const mongoose=require("mongoose");
 const bodyParser=require("body-parser");
 const path = require("path")
 
-const DataSchema=require("./Models/DataSchema");
+const DataSchema=require("./Models/DataSchema").DataSchema;
+const PairSchema=require("./Models/DataSchema").PairSchema;
 
 const app=express();
 
@@ -55,13 +56,13 @@ app.post("/saveData",async (req,res) => {
     console.log(doc);
     
     flag = 1;
-    for(interval in doc.interval){
-        if(req.body.endTime<interval[0] || req.body.startTime>interval[1]) continue;
+    doc.interviewTime.forEach((interval) => {
+        if(req.body.endTime<interval.startTime || req.body.startTime>interval.endTime) return;
         else{
             flag=0;
-            break;
         }
-    }
+    })
+        
 
     let updated;
 
@@ -69,16 +70,17 @@ app.post("/saveData",async (req,res) => {
         throw new Error("Cant schedule as it will overlap");
     } 
     else{
-        const interval=[];
-        interval.push(req.body.startTime);
-        interval.push(req.body.endTime);
+        const interval= new PairSchema({
+            startTime:req.body.startTime,
+            endTime:req.body.endTime
+        })
+
         updated = DataSchema.update(
             { email: req.body.email }, 
             { $push: { interviewTime: interval } },
             {upsert:true}
         );
-
-        
+  
     }
 
 });
@@ -96,3 +98,4 @@ app.get("/getParticipants",async (req,res) => {
 app.listen(process.env.PORT || 5000,() => {
     console.log("App started.");
 })
+
