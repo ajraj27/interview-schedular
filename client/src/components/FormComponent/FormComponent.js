@@ -57,7 +57,22 @@ class FormComponent extends Component {
         else allowed = 0;
 
         const list=this.state.participants.map((participant) => {
-            return  <li><b>Name</b>: {participant.name} &nbsp;&nbsp;&nbsp;&nbsp;  <b>Email</b>: {participant.email}</li>
+            let intervalArray=[]
+            participant.interviewTime.forEach((interval) => {
+                const temp=[];
+                temp.push(interval.startTime);
+                temp.push(interval.endTime);
+                intervalArray.push(temp);
+            })
+
+            const intervalList=intervalArray.map((interval) => <li>{interval[0]} &nbsp; {interval[1]}</li>)
+
+            return (
+                <div>
+                <li><b>Name</b>: {participant.name} &nbsp;&nbsp;&nbsp;&nbsp;  <b>Email</b>: {participant.email}</li>
+                <ul>{intervalList}</ul>
+                </div>
+            ) 
         });
 
         return(
