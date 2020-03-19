@@ -75,12 +75,9 @@ app.post("/saveData",async (req,res) => {
             endTime:req.body.endTime
         })
 
-        updated = DataSchema.update(
-            { email: req.body.email }, 
-            { $push: { interviewTime: interval } },
-            {upsert:true}
-        );
-  
+        const temp = await DataSchema.findOne({email: req.body.email});
+        temp.interviewTime.push(interval);
+        temp.save();
     }
 
 });
